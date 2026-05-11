@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Archen | Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #080b0f;
+    --surface: #0d1117;
+    --surface2: #131a24;
+    --border: #1e2d3d;
+    --accent: #00f5a0;
+    --accent2: #00d4ff;
+    --danger: #ff4757;
+    --text: #c9d1d9;
+    --text-dim: #8b949e;
+    --text-bright: #e6edf3;
+    --mono: 'Share Tech Mono', monospace;
+    --sans: 'Syne', sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  #cursor {
+    position: fixed;
+    width: 12px; height: 12px;
+    background: var(--accent);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s, width 0.2s, height 0.2s, background 0.2s;
+    mix-blend-mode: screen;
+  }
+  #cursor-ring {
+    position: fixed;
+    width: 36px; height: 36px;
+    border: 1px solid var(--accent2);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: transform 0.12s ease-out, width 0.2s, height 0.2s;
+    opacity: 0.5;
+  }
+
+  /* Scanline overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.08) 2px,
+      rgba(0,0,0,0.08) 4px
+    );
+    pointer-events: none;
+    z-index: 1000;
+  }
+
+  /* Grid background */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,245,160,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,245,160,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Nav */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 500;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.2rem 3rem;
+    background: rgba(8,11,15,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-family: var(--mono);
+    color: var(--accent);
+    font-size: 1rem;
+    letter-spacing: 0.1em;
+  }
+  .nav-logo span { color: var(--text-dim); }
+  nav ul {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+  }
+  nav a {
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    color: var(--text-dim);
+    text-decoration: none;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+    position: relative;
+  }
+  nav a::before {
+    content: '//';
+    margin-right: 4px;
+    color: var(--accent);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  nav a:hover { color: var(--accent); }
+  nav a:hover::before { opacity: 1; }
+
+  /* Sections */
+  section {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    padding: 8rem 3rem 5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 0.6rem;
+  }
+  .section-label::before { content: '> '; }
+
+  h2.section-title {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 800;
+    color: var(--text-bright);
+    line-height: 1.05;
+    margin-bottom: 3rem;
+  }
+  h2.section-title span {
+    color: transparent;
+    -webkit-text-stroke: 1px var(--accent);
+  }
+
+  /* ─── HERO ─── */
+  #home {
+    display: flex;
+    align-items: center;
+    min-height: 100vh;
+    padding-top: 6rem;
+  }
+  .hero-inner {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+  }
+  .hero-badge {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .blink {
+    display: inline-block;
+    width: 8px; height: 14px;
+    background: var(--accent);
+    animation: blink 1s steps(1) infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+  h1 {
+    font-size: clamp(2.8rem, 6vw, 5rem);
+    font-weight: 800;
+    line-height: 1.0;
+    color: var(--text-bright);
+    margin-bottom: 0.5rem;
+  }
+  h1 .name-accent {
+    color: var(--accent);
+    display: block;
+  }
+  .hero-sub {
+    font-family: var(--mono);
+    font-size: 0.95rem;
+    color: var(--accent2);
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.05em;
+  }
+  .hero-desc {
+    font-size: 1rem;
+    color: var(--text-dim);
+    line-height: 1.8;
+    max-width: 480px;
+    margin-bottom: 2.5rem;
+  }
+  .hero-cta {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .btn {
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.75rem 1.8rem;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    background: transparent;
+    cursor: none;
+    text-decoration: none;
+    transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--accent);
+    transform: translateX(-100%);
+    transition: transform 0.25s;
+    z-index: -1;
+  }
+  .btn:hover { color: var(--bg); box-shadow: 0 0 20px rgba(0,245,160,0.3); }
+  .btn:hover::before { transform: translateX(0); }
+  .btn-ghost {
+    border-color: var(--border);
+    color: var(--text-dim);
+  }
+  .btn-ghost::before { background: var(--surface2); }
+  .btn-ghost:hover { color: var(--text-bright); box-shadow: none; }
+
+  /* Terminal box */
+  .hero-terminal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+    box-shadow: 0 0 60px rgba(0,245,160,0.06), 0 20px 60px rgba(0,0,0,0.5);
+  }
+  .terminal-bar {
+    background: var(--surface2);
+    padding: 0.6rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot-r { background: var(--danger); }
+  .dot-y { background: #f0c040; }
+  .dot-g { background: var(--accent); }
+  .terminal-title {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    margin-left: 0.5rem;
+  }
+  .terminal-body {
+    padding: 1.5rem;
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    line-height: 2;
+    min-height: 220px;
+  }
+  .t-dim { color: var(--text-dim); }
+  .t-acc { color: var(--accent); }
+  .t-acc2 { color: var(--accent2); }
+  .t-warn { color: #f0c040; }
+  .t-err { color: var(--danger); }
+
+  /* ─── ABOUT ─── */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 4rem;
+    align-items: start;
+  }
+  .about-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 2rem;
+    position: relative;
+  }
+  .about-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px; height: 100%;
+    background: linear-gradient(180deg, var(--accent), var(--accent2));
+  }
+  .about-avatar {
+    width: 100%;
+    aspect-ratio: 1;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--mono);
+    font-size: 4rem;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .about-avatar::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent 50%, rgba(0,245,160,0.05) 100%);
+  }
+  .stat-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+  .stat-item {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 1rem;
+  }
+  .stat-val {
+    font-family: var(--mono);
+    font-size: 1.5rem;
+    color: var(--accent);
+    font-weight: bold;
+  }
+  .stat-key {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-top: 0.2rem;
+  }
+  .about-text p {
+    color: var(--text-dim);
+    line-height: 1.9;
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+  }
+  .about-text p strong { color: var(--text-bright); }
+  .info-row {
+    display: flex;
+    align-items: baseline;
+    gap: 0.8rem;
+    margin-bottom: 0.6rem;
+  }
+  .info-key {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--accent);
+    min-width: 100px;
+    letter-spacing: 0.05em;
+  }
+  .info-val {
+    font-size: 0.9rem;
+    color: var(--text);
+  }
+
+  /* ─── PROJECTS ─── */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 1.5rem;
+  }
+  .project-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 1.8rem;
+    position: relative;
+    transition: border-color 0.2s, transform 0.2s;
+    overflow: hidden;
+  }
+  .project-card::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 60px; height: 60px;
+    background: linear-gradient(225deg, rgba(0,245,160,0.08) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .project-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0,245,160,0.08);
+  }
+  .project-tag-row {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+  }
+  .tag {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    padding: 0.2rem 0.6rem;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .tag-accent { border-color: var(--accent); color: var(--accent); }
+  .tag-blue { border-color: var(--accent2); color: var(--accent2); }
+  .project-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-bright);
+    margin-bottom: 0.6rem;
+  }
+  .project-desc {
+    font-size: 0.88rem;
+    color: var(--text-dim);
+    line-height: 1.7;
+    margin-bottom: 1.2rem;
+  }
+  .project-score {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--accent);
+  }
+  .project-links {
+    display: flex;
+    gap: 0.8rem;
+    margin-top: 1rem;
+  }
+  .project-link {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    transition: color 0.2s;
+  }
+  .project-link:hover { color: var(--accent); }
+
+  /* ─── SKILLS ─── */
+  .skills-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+  }
+  .skill-group-title {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--accent2);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .skill-item {
+    margin-bottom: 1.2rem;
+  }
+  .skill-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 0.4rem;
+  }
+  .skill-name {
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    color: var(--text);
+  }
+  .skill-pct {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--accent);
+  }
+  .skill-bar {
+    height: 2px;
+    background: var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  .skill-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    animation: fillBar 1.2s ease-out forwards;
+    transform-origin: left;
+  }
+  @keyframes fillBar {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+  }
+  .tech-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+  }
+  .pill {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    padding: 0.3rem 0.8rem;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    letter-spacing: 0.05em;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .pill:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ─── EXPERIENCE ─── */
+  .timeline {
+    position: relative;
+    padding-left: 2rem;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 1px;
+    background: linear-gradient(180deg, var(--accent), var(--accent2), transparent);
+  }
+  .tl-item {
+    position: relative;
+    margin-bottom: 3rem;
+    padding-left: 2rem;
+  }
+  .tl-dot {
+    position: absolute;
+    left: -2.45rem;
+    top: 0.4rem;
+    width: 10px; height: 10px;
+    background: var(--accent);
+    border-radius: 50%;
+    box-shadow: 0 0 12px var(--accent);
+  }
+  .tl-date {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    margin-bottom: 0.4rem;
+  }
+  .tl-role {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-bright);
+    margin-bottom: 0.2rem;
+  }
+  .tl-company {
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    color: var(--accent2);
+    margin-bottom: 0.8rem;
+  }
+  .tl-desc {
+    font-size: 0.9rem;
+    color: var(--text-dim);
+    line-height: 1.8;
+  }
+  .tl-tags {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    margin-top: 0.8rem;
+  }
+
+  /* ─── CONTACT ─── */
+  #contact { min-height: auto; padding-bottom: 8rem; }
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: start;
+  }
+  .contact-info p {
+    font-size: 0.95rem;
+    color: var(--text-dim);
+    line-height: 1.9;
+    margin-bottom: 2rem;
+  }
+  .contact-link-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    color: var(--text-dim);
+  }
+  .contact-link-item .icon {
+    color: var(--accent);
+    min-width: 20px;
+    text-align: center;
+  }
+  .contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  .form-label {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .form-input {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text-bright);
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    padding: 0.75rem 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+    cursor: none;
+  }
+  .form-input:focus { border-color: var(--accent); }
+  textarea.form-input { min-height: 120px; resize: vertical; }
+
+  /* Footer */
+  footer {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 2rem;
+    border-top: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--text-dim);
+  }
+  footer span { color: var(--accent); }
+
+  /* Fade in animation */
+  .fade-up {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .fade-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Glitch text effect */
+  .glitch {
+    position: relative;
+  }
+  .glitch::before,
+  .glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+  }
+  .glitch::before {
+    color: var(--accent2);
+    animation: glitch1 3s infinite linear;
+    clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%);
+    opacity: 0.8;
+  }
+  .glitch::after {
+    color: var(--danger);
+    animation: glitch2 3s infinite linear;
+    clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%);
+    opacity: 0.6;
+  }
+  @keyframes glitch1 {
+    0%,92%,100% { transform: none; }
+    93% { transform: translate(-2px, 1px); }
+    95% { transform: translate(2px, -1px); }
+    97% { transform: translate(-1px, 2px); }
+  }
+  @keyframes glitch2 {
+    0%,92%,100% { transform: none; }
+    93% { transform: translate(2px, -1px); }
+    95% { transform: translate(-2px, 1px); }
+    97% { transform: translate(1px, -2px); }
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    nav ul { gap: 1rem; }
+    section { padding: 7rem 1.5rem 4rem; }
+    .hero-inner, .about-grid, .skills-wrapper, .contact-grid { grid-template-columns: 1fr; }
+    .hero-terminal { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">archen<span>.dev</span></div>
+  <ul>
+    <li><a href="#home">Home</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="home">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-badge">
+        <span>STATUS: ONLINE</span><span class="blink"></span>
+      </div>
+      <h1>
+        Hans Jeio
+        <span class="name-accent glitch" data-text="Miro Lebite">Miro Lebite</span>
+      </h1>
+      <p class="hero-sub">// BS Computer Engineering @ BulSU</p>
+      <p class="hero-desc">
+        Embedded systems tinkerer, IoT builder, and Android developer.
+        Turning circuits and code into systems that actually do things.
+      </p>
+      <div class="hero-cta">
+        <a href="#projects" class="btn">View Projects</a>
+        <a href="#contact" class="btn btn-ghost">Get in Touch</a>
+      </div>
+    </div>
+    <div class="hero-terminal fade-up">
+      <div class="terminal-bar">
+        <div class="dot dot-r"></div>
+        <div class="dot dot-y"></div>
+        <div class="dot dot-g"></div>
+        <span class="terminal-title">archen@dev:~$</span>
+      </div>
+      <div class="terminal-body">
+        <div><span class="t-dim">$ </span><span class="t-acc">whoami</span></div>
+        <div><span class="t-acc2">archen</span> <span class="t-dim">— CpE Student & IoT Builder</span></div>
+        <br/>
+        <div><span class="t-dim">$ </span><span class="t-acc">cat interests.json</span></div>
+        <div><span class="t-dim">{</span></div>
+        <div>&nbsp;&nbsp;<span class="t-warn">"embedded"</span><span class="t-dim">: </span><span class="t-acc2">"ESP32, sensors, circuits"</span><span class="t-dim">,</span></div>
+        <div>&nbsp;&nbsp;<span class="t-warn">"android"</span><span class="t-dim">: </span><span class="t-acc2">"Kotlin, MVVM, Room"</span><span class="t-dim">,</span></div>
+        <div>&nbsp;&nbsp;<span class="t-warn">"iot"</span><span class="t-dim">: </span><span class="t-acc2">"Blynk, MQTT, sensors"</span></div>
+        <div><span class="t-dim">}</span></div>
+        <br/>
+        <div><span class="t-dim">$ </span><span class="t-acc">./status.sh</span></div>
+        <div><span class="t-acc">[✓]</span> OJT @ P.C.M. Cosmetic Products Trading</div>
+        <div><span class="t-acc">[✓]</span> Thesis rated <span class="t-warn">4.72/5.0</span> under ISO 25010</div>
+        <div><span class="t-acc">[~]</span> Open to opportunities<span class="blink"></span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-label">00 / about</div>
+  <h2 class="section-title">Who I <span>Am</span></h2>
+  <div class="about-grid">
+    <div class="fade-up">
+      <div class="about-avatar">{ A }</div>
+      <div class="stat-grid">
+        <div class="stat-item">
+          <div class="stat-val">4.72</div>
+          <div class="stat-key">Thesis Score /5.0</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-val">IoT</div>
+          <div class="stat-key">Specialty</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-val">CpE</div>
+          <div class="stat-key">Degree</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-val">3+</div>
+          <div class="stat-key">Major Projects</div>
+        </div>
+      </div>
+    </div>
+    <div class="about-text fade-up">
+      <div class="about-card" style="margin-bottom:2rem;">
+        <div class="info-row"><span class="info-key">alias</span><span class="info-val">Archen</span></div>
+        <div class="info-row"><span class="info-key">full_name</span><span class="info-val">Hans Jeio Miro Lebite</span></div>
+        <div class="info-row"><span class="info-key">university</span><span class="info-val">Bulacan State University – Bustos</span></div>
+        <div class="info-row"><span class="info-key">program</span><span class="info-val">BS Computer Engineering</span></div>
+        <div class="info-row"><span class="info-key">current</span><span class="info-val">OJT @ P.C.M. Cosmetic Products Trading</span></div>
+        <div class="info-row"><span class="info-key">status</span><span class="info-val" style="color:var(--accent)">● Online</span></div>
+      </div>
+      <p>I'm a Computer Engineering student with a passion for building things that bridge the physical and digital world. From designing PCB layouts for solar-powered greenhouses to developing Android apps with clean MVVM architecture — I like the full stack, hardware to software.</p>
+      <p>My undergraduate thesis, the <strong>S3-RAD</strong>, is a solar-powered, IoT-enabled laundry drying system with sun-tracking and rain detection — rated 4.72/5.0 under ISO 25010 evaluation. I also love security research: my group built an IoT Vulnerability Scanner with automated hardening recommendations.</p>
+      <p>Outside of tech, I've worked as an <strong>Account Manager</strong> in a BPO setting, which gave me solid communication and client management chops that complement my engineering side.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-label">01 / projects</div>
+  <h2 class="section-title"><span>Selected</span> Works</h2>
+  <div class="projects-grid">
+
+    <div class="project-card fade-up">
+      <div class="project-tag-row">
+        <span class="tag tag-accent">Thesis</span>
+        <span class="tag">ESP32</span>
+        <span class="tag">IoT</span>
+        <span class="tag">Blynk</span>
+      </div>
+      <div class="project-title">S3-RAD — Solar Sampayan</div>
+      <div class="project-desc">Solar-powered, sun-following automated laundry drying system with rain detection and Blynk IoT mobile monitoring. LDR-based solar tracking, ESP32 core, automatic fan drying.</div>
+      <div class="project-score">ISO 25010 Rating: 4.72 / 5.0</div>
+      <div class="project-links">
+        <a href="#" class="project-link">[ view details ]</a>
+      </div>
+    </div>
+
+    <div class="project-card fade-up">
+      <div class="project-tag-row">
+        <span class="tag tag-blue">Android</span>
+        <span class="tag">Kotlin</span>
+        <span class="tag">MVVM</span>
+        <span class="tag">Room</span>
+      </div>
+      <div class="project-title">TheReader — e-Reader App</div>
+      <div class="project-desc">Android e-reader application built with Kotlin, MVVM architecture, and Room database. Features clean reading UX, local book storage, and modern Android build toolchain (AGP 8.7.3 + KSP).</div>
+      <div class="project-links">
+        <a href="#" class="project-link">[ view details ]</a>
+      </div>
+    </div>
+
+    <div class="project-card fade-up">
+      <div class="project-tag-row">
+        <span class="tag tag-accent">Security</span>
+        <span class="tag">Python</span>
+        <span class="tag">Nmap</span>
+        <span class="tag">MQTT</span>
+      </div>
+      <div class="project-title">IoT Vulnerability Scanner</div>
+      <div class="project-desc">Python-based IoT device scanner with Nmap fingerprinting, default credential checks, MQTT protocol testing, CVSS/OWASP IoT Top 10 mapping, and automated PDF hardening reports.</div>
+      <div class="project-links">
+        <a href="#" class="project-link">[ view details ]</a>
+      </div>
+    </div>
+
+    <div class="project-card fade-up">
+      <div class="project-tag-row">
+        <span class="tag">ESP32</span>
+        <span class="tag">PCB Design</span>
+        <span class="tag">Solar</span>
+        <span class="tag">Sensors</span>
+      </div>
+      <div class="project-title">Solar Greenhouse Automation</div>
+      <div class="project-desc">Full hardware design: PCB layout, circuit schematics, power distribution for a solar-powered greenhouse. Includes relay modules, stepper/DC motor drivers, DHT22 & moisture sensors, solar charge controller.</div>
+      <div class="project-links">
+        <a href="#" class="project-link">[ view details ]</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-label">02 / skills</div>
+  <h2 class="section-title">Tech <span>Stack</span></h2>
+  <div class="skills-wrapper">
+    <div class="fade-up">
+      <div class="skill-group-title">// Embedded & Hardware</div>
+      <div class="skill-item">
+        <div class="skill-row"><span class="skill-name">ESP32 / Microcontrollers</span><span class="skill-pct">90%</span></div>
+        <div class="skill-bar"><div class="skill-fill" style="width:90%"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-row"><span class="skill-name">PCB Design / Schematics</span><span class="skill-pct">80%</span></div>
+        <div class="skill-bar"><div class="skill-fill" style="width:80%"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-row"><span class="skill-name">Sensor Integration</span><span class="skill-pct">85%</span></div>
+        <div class="skill-bar"><div class="skill-fill" style="width:85%"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-row"><span class="skill-name">IoT Protocols (MQTT, Blynk)</span><span class="skill-pct">80%</span></div>
+        <div class="skill-bar"><div class="skill-fill" style="width:80%"></div></div>
+      </div>
+
+      <div class="skill-group-title" style="margin-top:2.5rem;">// Security & Tools</div>
+      <div class="skill-item">
+        <div class="skill-row"><span class="skill-name">Nmap / Network Scanning</span><span class="skill-pct">75%</span></div>
+        <div class="skill-bar"><div class="skill-fill" style="width:75%"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-row"><span class="skill-name">Python</span><span class="skill-pct">80%</span></div>
+        <div class="skill-bar"><div class="skill-fill" style="width:80%"></div></div>
+      </div>
+    </div>
+
+    <div class="fade-up">
+      <div class="skill-group-title">// Android & Software</div>
+      <div class="skill-item">
+        <div class="skill-row"><span class="skill-name">Kotlin / Android</span><span class="skill-pct">80%</span></div>
+        <div class="skill-bar"><div class="skill-fill" style="width:80%"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-row"><span class="skill-name">MVVM Architecture</span><span class="skill-pct">78%</span></div>
+        <div class="skill-bar"><div class="skill-fill" style="width:78%"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-row"><span class="skill-name">Room Database / KSP</span><span class="skill-pct">75%</span></div>
+        <div class="skill-bar"><div class="skill-fill" style="width:75%"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-row"><span class="skill-name">Gradle / Build Systems</span><span class="skill-pct">70%</span></div>
+        <div class="skill-bar"><div class="skill-fill" style="width:70%"></div></div>
+      </div>
+
+      <div class="skill-group-title" style="margin-top:2.5rem;">// All Technologies</div>
+      <div class="tech-pills">
+        <span class="pill">C/C++</span>
+        <span class="pill">Python</span>
+        <span class="pill">Kotlin</span>
+        <span class="pill">ESP32</span>
+        <span class="pill">Arduino</span>
+        <span class="pill">Blynk IoT</span>
+        <span class="pill">MQTT</span>
+        <span class="pill">Nmap</span>
+        <span class="pill">Room DB</span>
+        <span class="pill">MVVM</span>
+        <span class="pill">Git</span>
+        <span class="pill">PCB CAD</span>
+        <span class="pill">Solar Systems</span>
+        <span class="pill">Android Studio</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="section-label">03 / experience</div>
+  <h2 class="section-title">Career <span>Timeline</span></h2>
+  <div class="timeline">
+
+    <div class="tl-item fade-up">
+      <div class="tl-dot"></div>
+      <div class="tl-date">2025 — Present</div>
+      <div class="tl-role">IT Intern</div>
+      <div class="tl-company">P.C.M. Cosmetic Products Trading</div>
+      <div class="tl-desc">
+        Completing OJT requirements through BulSU's Student Internship Program (SIP). Assisting in IT support, systems coordination, and on-site technical operations.
+      </div>
+      <div class="tl-tags">
+        <span class="tag tag-accent">IT Support</span>
+        <span class="tag">OJT / SIP</span>
+      </div>
+    </div>
+
+    <div class="tl-item fade-up">
+      <div class="tl-dot"></div>
+      <div class="tl-date">2024 — 2025</div>
+      <div class="tl-role">Account Manager</div>
+      <div class="tl-company">VBS — Best Commodity Solutions</div>
+      <div class="tl-desc">
+        Managed client accounts in a BPO/call centre environment. Responsible for relationship management, issue resolution, and maintaining high service quality for business accounts.
+      </div>
+      <div class="tl-tags">
+        <span class="tag">Account Management</span>
+        <span class="tag">BPO</span>
+        <span class="tag">Client Relations</span>
+      </div>
+    </div>
+
+    <div class="tl-item fade-up">
+      <div class="tl-dot"></div>
+      <div class="tl-date">2021 — 2025</div>
+      <div class="tl-role">BS Computer Engineering Student</div>
+      <div class="tl-company">Bulacan State University — Bustos Campus</div>
+      <div class="tl-desc">
+        Full undergraduate program in Computer Engineering. Completed major projects including an IoT laundry drying system (thesis, 4.72/5.0), IoT vulnerability scanner, Android e-reader app, and solar greenhouse automation hardware.
+      </div>
+      <div class="tl-tags">
+        <span class="tag tag-blue">Thesis</span>
+        <span class="tag">IoT</span>
+        <span class="tag">Embedded Systems</span>
+        <span class="tag">Android</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-label">04 / contact</div>
+  <h2 class="section-title">Get In <span>Touch</span></h2>
+  <div class="contact-grid">
+    <div class="contact-info fade-up">
+      <p>
+        Available for internship extensions, freelance hardware/software projects, and remote opportunities. If you have something interesting — let's talk.
+      </p>
+      <div class="contact-link-item">
+        <span class="icon">@</span>
+        <span>hansjeio.lebite@email.com</span>
+      </div>
+      <div class="contact-link-item">
+        <span class="icon">📍</span>
+        <span>Bulacan, Philippines</span>
+      </div>
+      <div class="contact-link-item">
+        <span class="icon">⚡</span>
+        <span>Open to remote opportunities</span>
+      </div>
+      <div style="margin-top:2rem;">
+        <div class="about-card">
+          <div class="info-row"><span class="info-key">response</span><span class="info-val">Usually within 24hrs</span></div>
+          <div class="info-row"><span class="info-key">timezone</span><span class="info-val">PHT (UTC+8)</span></div>
+          <div class="info-row"><span class="info-key">preferred</span><span class="info-val">Email or LinkedIn</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="fade-up">
+      <div class="contact-form">
+        <div class="form-field">
+          <label class="form-label">// your_name</label>
+          <input class="form-input" type="text" placeholder="Enter your name"/>
+        </div>
+        <div class="form-field">
+          <label class="form-label">// email_address</label>
+          <input class="form-input" type="email" placeholder="your@email.com"/>
+        </div>
+        <div class="form-field">
+          <label class="form-label">// message</label>
+          <textarea class="form-input" placeholder="What's on your mind?"></textarea>
+        </div>
+        <button class="btn" style="width:fit-content;" onclick="this.textContent='[ message_sent ✓ ]'; this.style.borderColor='var(--accent)'; this.style.color='var(--accent)';">
+          ./send_message.sh
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div>built by <span>archen</span> · 2025 · all systems operational <span>●</span></div>
+</footer>
+
+<script>
+  // Cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursor-ring');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx + 'px';
+    cursor.style.top = my + 'px';
+  });
+  function animRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    requestAnimationFrame(animRing);
+  }
+  animRing();
+  document.querySelectorAll('a,button,.project-card,.pill').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.width = '20px'; cursor.style.height = '20px';
+      ring.style.width = '50px'; ring.style.height = '50px';
+    });
+    el.addEventListener('mouseleave', () => {
+      cursor.style.width = '12px'; cursor.style.height = '12px';
+      ring.style.width = '36px'; ring.style.height = '36px';
+    });
+  });
+
+  // Scroll fade-in
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+      }
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+  // Active nav highlight
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('nav a');
+  window.addEventListener('scroll', () => {
+    let cur = '';
+    sections.forEach(s => {
+      if (window.scrollY >= s.offsetTop - 120) cur = s.id;
+    });
+    navLinks.forEach(a => {
+      a.style.color = a.getAttribute('href') === '#' + cur ? 'var(--accent)' : '';
+    });
+  });
+</script>
+</body>
+</html>
